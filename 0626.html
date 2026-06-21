@@ -962,7 +962,7 @@ async function prepareResultImage(p){
   resultImagePreparing=true;
   button.disabled=true;
   button.textContent="正在抄錄卷冊…";
-  if(hint)hint.textContent="正在將完整結果頁轉為圖片，請稍候。";
+  if(hint){hint.style.display="block";hint.textContent="正在將完整結果頁轉為圖片，請稍候。";}
 
   try{
     if(typeof html2canvas!=="function"){
@@ -1017,7 +1017,7 @@ async function prepareResultImage(p){
     preparedResultUrl=URL.createObjectURL(blob);
 
     button.disabled=false;
-    button.textContent="已抄錄至卷冊";
+    button.textContent="圖片準備完成";
     if(hint){
       hint.textContent="";
       hint.style.display="none";
@@ -1042,7 +1042,11 @@ function downloadPreparedResultImage(button,hint){
   if(isIOS){
     const opened=window.open(preparedResultUrl,"_blank");
     if(opened){
-      if(hint)hint.textContent="圖片已開啟。請長按圖片，再選擇「儲存到照片」。";
+      button.textContent="再次開啟圖片";
+      if(hint){
+        hint.style.display="block";
+        hint.textContent="圖片已開啟。請長按圖片，再選擇「儲存到照片」。";
+      }
       return;
     }
   }
@@ -1060,7 +1064,7 @@ function downloadPreparedResultImage(button,hint){
       ?"圖片已開啟或下載。請長按圖片，選擇「儲存到照片」。"
       :"圖片已下載；可在下載項目中開啟，並移至相簿。";
   }
-  button.textContent="已抄錄至卷冊";
+  button.textContent="再次下載圖片";
 }
 
 async function savePreparedResultImage(p,button){
@@ -1083,9 +1087,10 @@ async function savePreparedResultImage(p,button){
       navigator.canShare({files:[preparedResultFile]})
     ){
       await navigator.share(fileShareData);
-      button.textContent="已抄錄至卷冊";
+      button.textContent="再次儲存圖片";
       if(hint){
-        hint.textContent="系統選單已開啟。請選擇「儲存影像」、相簿或照片應用程式。";
+        hint.textContent="";
+        hint.style.display="none";
       }
       return;
     }
@@ -1093,8 +1098,8 @@ async function savePreparedResultImage(p,button){
     downloadPreparedResultImage(button,hint);
   }catch(error){
     if(error&&error.name==="AbortError"){
-      button.textContent="已抄錄至卷冊";
-      if(hint)hint.textContent="你已關閉儲存選單；可再次點選按鈕。";
+      button.textContent="儲存結果圖片";
+      if(hint){hint.textContent="";hint.style.display="none";}
       return;
     }
 
@@ -1164,9 +1169,9 @@ function renderResult(){
 
     <div class="actions" data-html2canvas-ignore="true">
       <button class="primary" id="restartBtn">重新展開地圖</button>
-      <button class="secondary" id="saveImageBtn" disabled>正在抄錄卷冊…</button>
+      <button class="secondary" id="saveImageBtn">儲存結果圖片</button>
     </div>
-    <p class="save-hint" id="saveHint" data-html2canvas-ignore="true">正在將完整結果頁轉為圖片，請稍候。</p>
+    <p class="save-hint" id="saveHint" data-html2canvas-ignore="true" style="display:none"></p>
   `;
 
   document.getElementById("restartBtn").addEventListener("click",()=>{
@@ -1177,7 +1182,6 @@ function renderResult(){
   const saveImageButton=document.getElementById("saveImageBtn");
   saveImageButton.addEventListener("click",()=>savePreparedResultImage(p,saveImageButton));
 
-  requestAnimationFrame(()=>prepareResultImage(p));
 }
 renderIntro();
 </script>
