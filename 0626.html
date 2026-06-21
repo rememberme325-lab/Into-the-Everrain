@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0b1018" />
+  <!--
+    Adobe Fonts 網頁專案：
+    請將 Adobe Fonts 提供的嵌入連結貼在這段註解下方，例如：
+    <link rel="stylesheet" href="https://use.typekit.net/xxxxxxx.css">
+
+    本檔已完成字體套用設定：
+    font-family: fot-tsukuaoldmin-pr6n
+    內文使用 300，標題使用 700（若專案僅啟用 L 字重，瀏覽器會合成粗體）。
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <title>永雨長征｜Into the Everrain</title>
+  <style>
+    /* FOT-TsukuAOldMin Pr6N L：Adobe Fonts 與本機安裝字體的共同入口 */
+    @font-face {
+      font-family: "TsukuAOldMin Local";
+      src:
+        local("FOT-TsukuAOldMin Pr6N L"),
+        local("FOT-TsukuAOldMin Pr6N"),
+        local("TsukuAOldMin Pr6N L");
+      font-style: normal;
+      font-weight: 300;
+      font-display: swap;
+    }
+
+    :root {
+      --night: #0b1018;
+      --ink: #e9dfc8;
+      --muted: #b7ac98;
+      --gold: #c8a96a;
+      --gold-bright: #e6cb8d;
+      --silver: #9bb0c2;
+      --line: rgba(225, 204, 154, 0.22);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+      --serif: fot-tsukuaoldmin-pr6n, "TsukuAOldMin Local", "FOT-TsukuAOldMin Pr6N L", "Noto Serif TC", "Songti TC", "PMingLiU", "Microsoft JhengHei", serif;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--night); scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--serif); font-style: normal; font-weight: 300; font-synthesis: weight; overflow-x: hidden;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(96,112,146,.15), transparent 34%),
+        radial-gradient(circle at 85% 88%, rgba(104,66,72,.12), transparent 36%),
+        linear-gradient(145deg, #090d14, #111725 55%, #090d14);
+    }
+    button { font: inherit; }
+    .world { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .world::before {
+      content:""; position:absolute; inset:-15%;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(199,179,128,.06), transparent 24%),
+        radial-gradient(circle at 65% 68%, rgba(126,151,170,.08), transparent 25%);
+      filter: blur(12px); animation: mistMove 20s ease-in-out infinite alternate;
+    }
+    .world::after {
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(to bottom, transparent 58%, rgba(0,0,0,.45)), radial-gradient(circle at 50% 45%, transparent 34%, rgba(0,0,0,.28) 100%);
+    }
+    @keyframes mistMove { from { transform: translate3d(-2%,-1%,0) scale(1); } to { transform: translate3d(3%,2%,0) scale(1.08); } }
+    .rain {
+      position:absolute; inset:-100px 0 0; opacity:.24;
+      background-image: repeating-linear-gradient(104deg, transparent 0 28px, rgba(180,202,218,.22) 29px 30px, transparent 31px 58px);
+      background-size:120px 180px; animation:rainFall 1.1s linear infinite; transform:skewX(-8deg);
+    }
+    .rain.far { opacity:.1; background-size:190px 260px; animation-duration:1.8s; filter:blur(.4px); }
+    @keyframes rainFall { from { background-position:0 -180px; } to { background-position:0 180px; } }
+    .ember { position:absolute; width:3px; height:3px; border-radius:50%; background:rgba(230,203,141,.7); box-shadow:0 0 12px rgba(230,203,141,.45); animation:floatEmber var(--duration) ease-in-out infinite; animation-delay:var(--delay); left:var(--left); bottom:-10px; opacity:0; }
+    @keyframes floatEmber { 0%{transform:translateY(0);opacity:0} 20%{opacity:.75} 100%{transform:translateY(-110vh) translateX(30px);opacity:0} }
+    .app { position:relative; z-index:2; min-height:100vh; display:grid; place-items:center; padding:30px 16px 44px; }
+    .shell { width:min(980px,100%); }
+    .topbar { display:none; align-items:center; gap:14px; margin:0 auto 14px; padding:0 4px; }
+    .chapter-count { color:var(--muted); font-size:13px; letter-spacing:.18em; white-space:nowrap; }
+    .road { position:relative; flex:1; height:10px; border:1px solid rgba(225,204,154,.17); background:rgba(255,255,255,.03); border-radius:999px; overflow:hidden; }
+    .road::before { content:""; position:absolute; inset:3px 8px; border-top:1px dashed rgba(225,204,154,.18); }
+    .road-fill { position:absolute; inset:0 auto 0 0; width:0%; background:linear-gradient(90deg, rgba(160,181,198,.42), rgba(230,203,141,.78)); box-shadow:0 0 18px rgba(230,203,141,.22); transition:width .55s ease; border-radius:inherit; }
+    .panel {
+      position:relative; overflow:hidden; min-height:590px; padding:clamp(26px,5vw,54px);
+      border:1px solid var(--line); border-radius:28px;
+      background:linear-gradient(160deg, rgba(255,255,255,.038), transparent 34%), linear-gradient(180deg, rgba(18,23,34,.91), rgba(10,14,22,.93));
+      box-shadow:var(--shadow); backdrop-filter:blur(18px); animation:panelIn .55s ease both;
+    }
+    .panel::before { content:""; position:absolute; inset:14px; border:1px solid rgba(225,204,154,.08); border-radius:20px; pointer-events:none; }
+    .panel::after { content:""; position:absolute; width:250px; height:250px; right:-125px; bottom:-125px; border-radius:50%; border:1px solid rgba(225,204,154,.10); box-shadow:0 0 0 32px rgba(225,204,154,.025),0 0 0 64px rgba(225,204,154,.012); pointer-events:none; }
+    @keyframes panelIn { from{opacity:0;transform:translateY(12px) scale(.992)} to{opacity:1;transform:none} }
+    .fade-out { animation:panelOut .26s ease forwards; }
+    @keyframes panelOut { to{opacity:0;transform:translateY(-8px) scale(.992)} }
+    .sigil { width:86px; height:86px; display:grid; place-items:center; margin-bottom:22px; border-radius:50%; color:#22190e; font-size:36px; background:radial-gradient(circle at 35% 28%, #f3ddb0, #c4a368 58%, #6b4f2d 100%); box-shadow:inset 0 0 0 4px rgba(62,40,19,.25),0 12px 34px rgba(0,0,0,.32),0 0 28px rgba(230,203,141,.12); }
+    .eyebrow { display:flex; align-items:center; gap:9px; margin-bottom:13px; color:var(--gold-bright); font-size:12px; letter-spacing:.22em; text-transform:uppercase; }
+    .eyebrow::before { content:"✦"; letter-spacing:0; opacity:.75; }
+    h1,h2,h3,p{margin-top:0} h1{margin-bottom:18px;font-size:clamp(42px,8vw,76px);line-height:1.05;letter-spacing:.06em;text-shadow:0 6px 24px rgba(0,0,0,.25)}
+    h2{margin-bottom:15px;font-size:clamp(28px,4.8vw,45px);line-height:1.28;letter-spacing:.035em} h3{font-size:20px;letter-spacing:.04em}
+
+    /* ===== Version 2 typography ===== */
+    h1, h2, h3,
+    .question-kicker,
+    .choice-title,
+    .result-title,
+    .result-name,
+    .result-section h3 {
+      font-family: var(--serif);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .subtitle,
+    .story,
+    .question-copy,
+    .choice-desc,
+    .transition-copy,
+    .loading-text,
+    .result-section p,
+    .near-tie {
+      font-family: var(--serif);
+      font-style: normal;
+      font-weight: 300;
+    }
+    .subtitle{margin-bottom:28px;color:var(--muted);font-size:17px;line-height:1.9;letter-spacing:.025em}
+    .story{position:relative;z-index:1;max-width:760px;color:var(--muted);font-size:16px;line-height:2;letter-spacing:.025em}.story p{margin-bottom:14px}
+    .incantation{margin:25px 0 28px;padding:17px 20px;border-left:2px solid rgba(230,203,141,.58);background:linear-gradient(90deg,rgba(230,203,141,.065),transparent);color:#e7dbc4;font-size:15px;line-height:2;font-style:italic}
+    .primary,.secondary,.choice{border:1px solid rgba(225,204,154,.26);color:var(--ink);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
+    .primary,.secondary{position:relative;z-index:1;border-radius:14px;padding:14px 20px}.primary{color:#20170d;font-weight:700;background:linear-gradient(135deg,#ecd49d,#c5a260);border-color:transparent;box-shadow:0 10px 28px rgba(0,0,0,.22)}.secondary{background:rgba(255,255,255,.03)}
+    .primary:hover,.secondary:hover,.choice:hover{transform:translateY(-2px);border-color:rgba(230,203,141,.65);box-shadow:0 12px 28px rgba(0,0,0,.24)}.primary:hover{background:linear-gradient(135deg,#f5dfaa,#d1ae67)}
+    .primary:focus-visible,.secondary:focus-visible,.choice:focus-visible{outline:3px solid rgba(230,203,141,.38);outline-offset:3px}
+    .question-kicker{margin-bottom:12px;color:var(--silver);font-size:13px;letter-spacing:.16em}.question-copy{max-width:760px;margin-bottom:22px;color:var(--muted);font-size:16px;line-height:1.9}
+    .choices{position:relative;z-index:1;display:grid;gap:12px}.choice{width:100%;min-height:96px;display:grid;grid-template-columns:44px 1fr;align-items:start;gap:15px;padding:18px 20px;text-align:left;border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}
+    .choice-mark{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(230,203,141,.28);border-radius:50%;color:var(--gold-bright);background:rgba(0,0,0,.13);font-weight:700}.choice-title{display:block;margin:1px 0 6px;font-size:17px;font-weight:700}.choice-desc{display:block;color:var(--muted);font-size:14px;line-height:1.72}.choice.selected{border-color:rgba(230,203,141,.82);background:linear-gradient(145deg,rgba(200,169,106,.16),rgba(155,176,194,.07));transform:scale(.99)}
+    .transition-scene{min-height:480px;display:grid;align-content:center;justify-items:center;text-align:center}.transition-icon{margin-bottom:22px;color:var(--gold-bright);font-size:48px;filter:drop-shadow(0 0 18px rgba(230,203,141,.18));animation:pulse 2s ease-in-out infinite}@keyframes pulse{0%,100%{transform:scale(1);opacity:.72}50%{transform:scale(1.06);opacity:1}}
+    .transition-copy{max-width:600px;color:var(--muted);font-size:17px;line-height:2}.loading-lines{min-height:190px;display:grid;place-items:center;text-align:center}.loading-text{color:var(--gold-bright);font-size:17px;letter-spacing:.08em;animation:loadingFade 1.45s ease-in-out infinite}@keyframes loadingFade{0%,100%{opacity:.35}50%{opacity:1}}
+    .result-hero{position:relative;z-index:1;display:grid;grid-template-columns:124px 1fr;gap:24px;align-items:center;margin-bottom:26px}.result-emblem{width:116px;height:116px;display:grid;place-items:center;border-radius:28px;border:1px solid rgba(230,203,141,.22);background:linear-gradient(145deg,rgba(200,169,106,.18),rgba(155,176,194,.08)),rgba(255,255,255,.025);font-size:52px;box-shadow:inset 0 0 34px rgba(255,255,255,.02)}
+    .result-region{margin-bottom:7px;color:var(--gold-bright);font-size:13px;letter-spacing:.18em}.result-title{margin-bottom:8px}.result-name{color:var(--silver);font-size:15px;letter-spacing:.09em}.result-section{position:relative;z-index:1;margin-top:26px;padding-top:23px;border-top:1px solid rgba(225,204,154,.13)}.result-section h3{color:var(--gold-bright);margin-bottom:12px}.result-section p{color:var(--muted);font-size:15px;line-height:1.92}
+    .tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.tag{padding:8px 12px;border:1px solid rgba(225,204,154,.18);border-radius:999px;color:var(--gold-bright);background:rgba(255,255,255,.028);font-size:13px}.near-tie{position:relative;z-index:1;margin-top:24px;padding:15px 17px;border-left:3px solid rgba(155,176,194,.55);border-radius:0 12px 12px 0;color:#c9c3b8;background:rgba(155,176,194,.07);font-size:14px;line-height:1.75}
+    .actions{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}.footer{margin-top:14px;text-align:center;color:rgba(183,172,152,.55);font-size:11px;letter-spacing:.18em}
+    @media(max-width:720px){.app{padding:16px 10px 28px;place-items:start center}.panel{min-height:auto;padding:28px 19px;border-radius:21px}.panel::before{inset:9px;border-radius:15px}.story,.question-copy{font-size:15px}.choice{grid-template-columns:38px 1fr;gap:12px;padding:16px}.choice-mark{width:36px;height:36px}.result-hero{grid-template-columns:1fr}.result-emblem{width:92px;height:92px;font-size:43px}.chapter-count{font-size:11px}}
+
+
+    /* ===== Mobile-first reading and touch refinements ===== */
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      color-scheme: dark;
+    }
+
+    body {
+      min-height: 100svh;
+      min-height: 100dvh;
+      overflow-wrap: anywhere;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .app {
+      min-height: 100svh;
+      min-height: 100dvh;
+      padding-top: max(30px, env(safe-area-inset-top));
+      padding-right: max(16px, env(safe-area-inset-right));
+      padding-bottom: max(44px, env(safe-area-inset-bottom));
+      padding-left: max(16px, env(safe-area-inset-left));
+    }
+
+    .panel,
+    .topbar {
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .primary,
+    .secondary,
+    .choice {
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .choice:disabled {
+      cursor: default;
+    }
+
+    /* Standard phone portrait */
+    @media (max-width: 720px) {
+      .app {
+        display: block;
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-right: max(10px, env(safe-area-inset-right));
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
+        padding-left: max(10px, env(safe-area-inset-left));
+      }
+
+      .shell {
+        width: 100%;
+      }
+
+      .topbar {
+        position: sticky;
+        top: max(6px, env(safe-area-inset-top));
+        z-index: 20;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 9px 11px;
+        border: 1px solid rgba(225, 204, 154, .12);
+        border-radius: 14px;
+        background: rgba(10, 14, 22, .78);
+        box-shadow: 0 8px 24px rgba(0,0,0,.22);
+      }
+
+      .chapter-count {
+        font-size: 11px;
+        letter-spacing: .12em;
+      }
+
+      .road {
+        height: 9px;
+      }
+
+      .panel {
+        min-height: calc(100svh - 82px);
+        min-height: calc(100dvh - 82px);
+        padding: clamp(22px, 6vw, 30px) clamp(17px, 5vw, 24px);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .panel::before {
+        inset: 8px;
+        border-radius: 14px;
+      }
+
+      .panel::after {
+        width: 190px;
+        height: 190px;
+        right: -110px;
+        bottom: -110px;
+      }
+
+      .sigil {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 18px;
+        font-size: 30px;
+      }
+
+      .eyebrow {
+        gap: 7px;
+        margin-bottom: 10px;
+        font-size: 11px;
+        letter-spacing: .15em;
+        line-height: 1.5;
+      }
+
+      h1 {
+        margin-bottom: 14px;
+        font-size: clamp(38px, 13vw, 58px);
+        line-height: 1.08;
+      }
+
+      h2 {
+        margin-bottom: 13px;
+        font-size: clamp(25px, 7.6vw, 34px);
+        line-height: 1.35;
+      }
+
+      h3 {
+        font-size: 18px;
+        line-height: 1.45;
+      }
+
+      .subtitle {
+        margin-bottom: 22px;
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .story,
+      .question-copy,
+      .result-section p {
+        font-size: 15px;
+        line-height: 1.88;
+      }
+
+      .story p {
+        margin-bottom: 12px;
+      }
+
+      .incantation {
+        margin: 20px 0 23px;
+        padding: 14px 15px;
+        font-size: 14px;
+        line-height: 1.9;
+      }
+
+      .question-kicker {
+        margin-bottom: 9px;
+        font-size: 12px;
+        letter-spacing: .12em;
+      }
+
+      .question-copy {
+        margin-bottom: 18px;
+      }
+
+      .choices {
+        gap: 10px;
+      }
+
+      .choice {
+        min-height: 78px;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 11px;
+        padding: 15px 14px;
+        border-radius: 15px;
+      }
+
+      .choice-mark {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+
+      .choice-title {
+        margin-bottom: 5px;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+
+      .choice-desc {
+        font-size: 13.5px;
+        line-height: 1.65;
+      }
+
+      .transition-scene {
+        min-height: calc(100svh - 130px);
+        min-height: calc(100dvh - 130px);
+        padding: 18px 2px;
+      }
+
+      .transition-icon {
+        margin-bottom: 18px;
+        font-size: 42px;
+      }
+
+      .transition-copy,
+      .loading-text {
+        font-size: 15px;
+        line-height: 1.9;
+      }
+
+      .loading-lines {
+        min-height: 150px;
+      }
+
+      .result-hero {
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 16px;
+        align-items: center;
+      }
+
+      .result-emblem {
+        width: 78px;
+        height: 78px;
+        border-radius: 20px;
+        font-size: 38px;
+      }
+
+      .result-region {
+        font-size: 11px;
+        letter-spacing: .13em;
+      }
+
+      .result-name {
+        font-size: 14px;
+      }
+
+      .result-section {
+        margin-top: 22px;
+        padding-top: 19px;
+      }
+
+      .tags {
+        gap: 7px;
+        margin-top: 20px;
+      }
+
+      .tag {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 25px;
+      }
+
+      .primary,
+      .secondary {
+        width: 100%;
+        min-height: 50px;
+        padding: 13px 16px;
+      }
+
+      .footer {
+        margin-top: 10px;
+        padding-bottom: env(safe-area-inset-bottom);
+        font-size: 9px;
+        letter-spacing: .13em;
+      }
+    }
+
+    /* Extra-narrow phones */
+    @media (max-width: 380px) {
+      .panel {
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+
+      .choice {
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 9px;
+        padding: 14px 12px;
+      }
+
+      .choice-mark {
+        width: 31px;
+        height: 31px;
+      }
+
+      .choice-title {
+        font-size: 15px;
+      }
+
+      .choice-desc {
+        font-size: 13px;
+      }
+
+      .result-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Phone landscape: reduce vertical chrome and use the width */
+    @media (orientation: landscape) and (max-height: 560px) {
+      .app {
+        display: block;
+        padding-top: max(7px, env(safe-area-inset-top));
+        padding-right: max(10px, env(safe-area-inset-right));
+        padding-bottom: max(14px, env(safe-area-inset-bottom));
+        padding-left: max(10px, env(safe-area-inset-left));
+      }
+
+      .shell {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: max(4px, env(safe-area-inset-top));
+        z-index: 20;
+        margin-bottom: 7px;
+        padding: 7px 10px;
+        border: 1px solid rgba(225, 204, 154, .12);
+        border-radius: 12px;
+        background: rgba(10, 14, 22, .82);
+      }
+
+      .panel {
+        min-height: calc(100svh - 64px);
+        min-height: calc(100dvh - 64px);
+        padding: 20px 24px;
+        border-radius: 18px;
+      }
+
+      .panel::before {
+        inset: 7px;
+        border-radius: 12px;
+      }
+
+      .sigil {
+        width: 58px;
+        height: 58px;
+        margin-bottom: 12px;
+        font-size: 25px;
+      }
+
+      h1 {
+        font-size: clamp(36px, 7vw, 52px);
+      }
+
+      h2 {
+        font-size: clamp(24px, 4vw, 32px);
+      }
+
+      .subtitle,
+      .story,
+      .question-copy {
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .incantation {
+        margin: 15px 0 18px;
+        padding: 11px 14px;
+        line-height: 1.7;
+      }
+
+      .choice {
+        min-height: 74px;
+        padding: 13px 14px;
+      }
+
+      .transition-scene {
+        min-height: calc(100svh - 90px);
+        min-height: calc(100dvh - 90px);
+        padding: 12px 0;
+      }
+
+      .transition-copy {
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .loading-lines {
+        min-height: 105px;
+      }
+
+      .result-hero {
+        grid-template-columns: 80px 1fr;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .result-emblem {
+        width: 76px;
+        height: 76px;
+        font-size: 36px;
+      }
+
+      .result-section {
+        margin-top: 18px;
+        padding-top: 16px;
+      }
+
+      .footer {
+        display: none;
+      }
+    }
+
+    /* Wider landscape phones can show the three answers side-by-side. */
+    @media (orientation: landscape) and (max-height: 560px) and (min-width: 700px) {
+      .choices {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .choice {
+        min-width: 0;
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 9px;
+        align-content: start;
+        padding: 13px 12px;
+      }
+
+      .choice-mark {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+
+      .choice-title {
+        font-size: 15px;
+        line-height: 1.4;
+      }
+
+      .choice-desc {
+        font-size: 12.5px;
+        line-height: 1.55;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .primary:hover,
+      .secondary:hover,
+      .choice:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .choice.selected {
+        transform: scale(.99);
+      }
+    }
+
+
+
+    /* ===== Final psychological result page ===== */
+    .result-preface {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 28px;
+      padding: 18px 20px;
+      border-left: 2px solid rgba(155,176,194,.52);
+      background: linear-gradient(90deg,rgba(155,176,194,.075),transparent);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .result-preface p:last-child,
+    .result-closing p:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-destination {
+      margin-top: 7px;
+      color: var(--gold-bright);
+      font-size: 13px;
+      letter-spacing: .09em;
+    }
+
+    .imprint-intro {
+      margin-bottom: 17px;
+    }
+
+    .imprint-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+    }
+
+    .imprint-card {
+      padding: 18px 19px;
+      border: 1px solid rgba(225,204,154,.16);
+      border-radius: 16px;
+      background: linear-gradient(145deg,rgba(255,255,255,.036),rgba(255,255,255,.014));
+    }
+
+    .imprint-label {
+      margin-bottom: 8px;
+      color: var(--silver);
+      font-size: 12px;
+      letter-spacing: .16em;
+    }
+
+    .imprint-value {
+      margin-bottom: 9px;
+      color: var(--gold-bright);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .035em;
+    }
+
+    .imprint-card p {
+      margin-bottom: 0;
+    }
+
+    .map-quote {
+      position: relative;
+      z-index: 1;
+      margin: 15px 0 0;
+      padding: 18px 20px;
+      border-left: 2px solid rgba(230,203,141,.58);
+      background: linear-gradient(90deg,rgba(230,203,141,.065),transparent);
+      color: #e7dbc4;
+      font-size: 15px;
+      line-height: 2;
+      font-style: italic;
+    }
+
+    .map-quote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .result-closing {
+      position: relative;
+      z-index: 1;
+      margin-top: 27px;
+      padding-top: 23px;
+      border-top: 1px solid rgba(225,204,154,.13);
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.92;
+    }
+
+    @media (max-width: 720px) {
+      .result-preface {
+        margin-bottom: 23px;
+        padding: 15px 16px;
+        font-size: 13.5px;
+        line-height: 1.82;
+      }
+
+      .imprint-card {
+        padding: 16px;
+      }
+
+      .imprint-value {
+        font-size: 17px;
+      }
+
+      .map-quote,
+      .result-closing {
+        font-size: 14px;
+        line-height: 1.88;
+      }
+    }
+
+    /* ===== Result image saving (iOS / Android) ===== */
+    .secondary:disabled {
+      cursor: wait;
+      opacity: .66;
+    }
+
+    .save-hint {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      margin: 10px 0 0;
+      color: rgba(183, 172, 152, .78);
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    .panel.capture-mode {
+      animation: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      overflow: visible !important;
+    }
+
+    .panel.capture-mode .actions,
+    .panel.capture-mode .save-hint {
+      display: none !important;
+    }
+
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="world" aria-hidden="true">
+    <div class="rain"></div><div class="rain far"></div>
+    <span class="ember" style="--left:12%;--duration:12s;--delay:-2s"></span>
+    <span class="ember" style="--left:26%;--duration:15s;--delay:-8s"></span>
+    <span class="ember" style="--left:47%;--duration:13s;--delay:-5s"></span>
+    <span class="ember" style="--left:71%;--duration:16s;--delay:-3s"></span>
+    <span class="ember" style="--left:86%;--duration:14s;--delay:-10s"></span>
+  </div>
+  <main class="app"><div class="shell">
+    <div class="topbar" id="topbar" aria-label="長征進度"><div class="chapter-count" id="chapterCount">第一道足跡</div><div class="road" aria-hidden="true"><div class="road-fill" id="roadFill"></div></div></div>
+    <section class="panel" id="panel" aria-live="polite"></section>
+    <div class="footer">INTO THE EVERRAIN</div>
+  </div></main>
+<script>
+const places={
+ mist:{
+  region:"王國東境",
+  title:"霧潮之境",
+  power:"靜潮之力",
+  name:"聽潮者",
+  emblem:"☾",
+  analysis:[
+   "當疲憊累積到一定程度，你的潛意識最先尋找的，不是新的刺激，也不是更多人的陪伴，而是一處能讓所有聲音逐漸退去的地方。",
+   "你需要暫時離開要求、意見與必須立即回應的事物。只有當外界慢慢安靜下來，你才有餘裕辨認自己的感受，重新確認什麼是你真正想要的。",
+   "你的療癒並不是逃離世界。你只是需要先替自己保留一道界線，讓那些被眾聲掩蓋太久的念頭，重新浮上海面。",
+   "當你不再被催促著前進，內在原本模糊的輪廓，也會像退潮後的岸線一樣，逐漸顯露。"
+  ],
+  reminder:[
+   "你不需要等到所有事情都結束，才允許自己休息。",
+   "有時候，真正的恢復，始於暫時不回答所有人。",
+   "安靜並不是停滯，而是讓你重新聽見方向。"
+  ],
+  road:"你的道路通往被山海與霧氣包圍的東境。那裡遠離密集的人聲與行程，允許旅人放慢腳步，在潮聲與雨幕之間重新聽見自己。",
+  tags:["安靜","界線","留白","聽見自己"],
+  quote:["不必等所有鐘聲停止，才允許自己休息。","當你願意守住內心的寂靜，你便不會再如此輕易地被眾聲帶離自己。"]
+ },
+ lantern:{
+  region:"王國西境",
+  title:"千燈王城",
+  power:"借光之力",
+  name:"借光而行者",
+  emblem:"✦",
+  analysis:[
+   "你並不一定需要徹底離開人群，才能恢復自己。",
+   "真正令你疲憊的，往往不是城市、行動或變化本身，而是每一件事情都必須由你判斷、安排與承擔。",
+   "當道路受阻時，你習慣立刻尋找下一個方向；當他人尚未察覺問題時，你可能已經先替所有人準備好了退路。",
+   "因此，你的潛意識渴望的，是一個能夠承接你的環境。那裡有容易辨認的道路、有可以隨時歇腳的地方，也允許你在計畫改變時，不必重新耗盡力氣。",
+   "你的療癒來自餘裕，也來自你終於願意相信：不是所有燈火，都必須由自己親手點亮。"
+  ],
+  reminder:[
+   "選擇比較容易走的道路，並不代表你不夠勇敢。",
+   "你不必每一次都獨自準備所有退路，也不需要把休息變成另一項必須完成的任務。",
+   "接受已經存在的光，也是一種照顧自己的方式。"
+  ],
+  road:"你的道路通往一座終夜不熄的明亮王城。那裡仍有人群與鐘聲，卻道路平穩、驛館眾多。即使原本的去處因雨關閉，也始終有另一盞燈在前方等待。",
+  tags:["餘裕","承接","彈性","不必獨撐"],
+  quote:["你不必親手點亮每一盞燈。","有些光原本就為遠行的人而留。願意靠近它，也是一種勇敢。"]
+ },
+ crimson:{
+  region:"王國南境",
+  title:"緋石古都",
+  power:"甦醒之力",
+  name:"拾憶者",
+  emblem:"❖",
+  analysis:[
+   "當生活長時間維持相同的節奏，你感受到的疲憊，可能不只是需要睡眠。",
+   "更深的疲憊，是日子仍然不斷向前，你卻逐漸感覺不到其中的氣味、顏色與溫度。",
+   "因此，你的潛意識會帶你靠近陌生的街道、未曾嚐過的滋味，以及被歲月留下痕跡的事物。",
+   "你需要的並不是密集而忙碌的行程，而是一些足以重新喚醒感官的片刻。一道食物、一扇舊門、一段意外走入的巷道，都可能讓你再次停下腳步，感覺自己此刻真正身在其中。",
+   "你的療癒，來自重新被世界打動。當生活重新擁有質地，你也會重新記起，自己仍然擁有好奇、喜歡與期待的能力。"
+  ],
+  reminder:[
+   "你並沒有失去感受生活的能力。",
+   "它只是被重複的日子覆蓋得太久。",
+   "你不需要不停追尋更多事物，只需要允許某一段經驗，在你心中停留得久一些。"
+  ],
+  road:"你的道路通往一座由紅牆、舊宅與彎曲街巷組成的南方古都。那裡的每一道門、每一種氣味，都可能使旅人重新想起，世界仍有許多尚未感受的模樣。",
+  tags:["感受","好奇","新鮮","重新甦醒"],
+  quote:["你並未失去感受世界的能力。","它只是沉睡得太久。讓一些陌生而美好的事物，重新將它喚醒。"]
+ }
+};
+
+const sweetImprints={
+ "東島細菓禮匣":"你選擇了一份熟悉而細緻的甜味。它不需要一次吃完，可以收進行囊，在不同的時刻慢慢取出。對你而言，療癒有時不是強烈的滿足，而是一份能被保留、分次靠近的安心。",
+ "高聳的奶霜層糕":"你選擇了一份無法獨自吃完的豐盛甜點。它最適合與人圍坐分食，在交談之間分享旅途，也聽見彼此最近走過的道路。對你而言，有些甜味只有在被分享時，才會真正完整。",
+ "濃甜酸莓小派":"你選擇了一份酸甜濃烈、能夠立即抵達心裡的滋味。此刻的你需要的不是緩慢而含蓄的安慰，而是一份足夠鮮明、足夠直接，能讓疲憊短暫退去的甜。"
+};
+
+const giftImprints={
+ "星砂金墨禮匣":"你選擇了一份閃爍著細碎金光的紀念。它不一定適合寫下漫長的篇章，卻適合留給少數重要的句子。當你再次提筆時，也許會想起，曾有人以如此鄭重而溫暖的方式，陪你記錄人生。",
+ "沉夜長書墨":"你選擇了一份不張揚，卻能長久陪伴書寫的紀念。它或許沒有耀眼的光芒，卻能穩定地留在每一封長信、每一頁日記，以及往後仍未寫完的故事之中。",
+ "暮銀掌石":"你選擇了一枚被歲月磨得溫潤的奇石。它會逐漸記住持有者的習慣，安靜地伏在掌中，使那些細碎、反覆而繁複的日常，變得更加輕省而從容。"
+};
+const transitions=[
+ {icon:"◇",html:"<p>你將那道聲音留在石碑之下。</p><p>當你再次展開地圖，銀色的道路已向前延伸了一寸。</p><p>雨仍然落著。然而離開城牆以後，你第一次聽見雨水本身的聲音。</p>"},
+ {icon:"✧",html:"<p>你走入選擇的拱門。</p><p>石門在身後化作一片霧，前方只剩延伸至雨中的長路。</p><p>傍晚時，你發現行囊外側多繫著一盞小燈。它的火焰極弱，卻始終沒有被風雨吹熄。</p>"},
+ {icon:"❦",html:"<p>你將旅誌放進行囊。</p><p>夜色降臨時，你在書頁之間發現一小片乾燥的葉子。</p><p>葉片下壓著一行極淡的字：<br>「不必將空白解釋給任何人聽。」</p>"},
+ {icon:"☂",html:"<p>雨勢在午後稍稍放緩。</p><p>你沿著簷廊繼續前行，一縷溫暖的甜香忽然穿過潮濕的空氣。</p><p>老樹下，一間小屋正亮著燈。</p>"},
+ {icon:"❧",html:"<p>甜味陪你走完了第二日剩下的路。</p><p>夜色降臨後，雨聲逐漸變得平緩。</p><p>當第三日的微光穿過窗縫，你知道返程的時刻已經接近。</p>"},
+ {icon:"✦",html:"<p>你將那件沒有重量的事物收進心裡。</p><p>回程的道路已在地圖上浮現，但最後一座驛站仍為你留著一盞燈。</p><p>在真正離開以前，你還能帶走一件放得進行囊的紀念。</p>"}
+];
+const questions=[
+ {chapter:"第一日・破曉",title:"留在城中的聲音",copy:"城門在身後緩慢闔上。最後一聲鐘鳴穿過雨幕，隨即被遙遠的雷聲吞沒。你走到一座風化的石碑前。碑面刻著古老的旅人律法：『遠行之人不可攜帶所有事物。在踏上長路以前，請將一種聲音留在此處。』",question:"你最希望哪一種聲音，在這三日之中不再追趕你？",options:[
+  {title:"不斷重複的昨日",desc:"它沒有責備你，卻讓每一天都像前一天的倒影<br>你想離開熟悉的輪廓，重新看見某些尚未被命名的事物",score:"crimson",points:3},
+  {title:"眾人交疊的囑咐",desc:"它們有時出於關心，有時出於期待，最後卻逐漸蓋過了你自己的聲音<br>你想去一個足夠遙遠的地方，讓沉默重新變得清晰",score:"mist",points:3},
+  {title:"永無止盡的鐘聲",desc:"一件差事結束，另一件便隨之而來<br>你不願讓遠行也成為新的考驗，只想走上一條不必反覆思量的路",score:"lantern",points:3}]},
+ {chapter:"第一日・日上之前",title:"無償之路並不存在",copy:"午前，你抵達一座荒廢的古驛。三座拱門並列於殘破石牆之間。當你走近時，掌中的地圖驟然發燙，門上的銘文也隨之浮現：「欲通過此地，必先留下代價。」<br>你明白，只有做出割捨，其中一扇門才會開啟。",question:"你必須將什麼遺留在來路上，方能換得這趟旅程片刻的喘息？",options:[
+  {title:"一部分旅費",desc:"遠方的道路漫長，通行的代價也較高；然而門後的城池保存著數百年的石牆、廟宇與市集",score:"crimson",points:3},
+  {title:"遠離人群的機會",desc:"那裡仍有鐘樓、人群與不眠的燈火，卻道路平穩、驛館眾多。即使雨勢不歇，也總有一盞燈為旅人留下歇腳之處",score:"lantern",points:3},
+  {title:"時間與便利",desc:"海崖的長路貼著山壁蜿蜒，車隊與驛站皆十分稀少，卻會將喧囂留在極遠的身後",score:"mist",points:3}]},
+ {chapter:"第一日・暮色",title:"三頁空白旅誌",copy:"入夜以前，你在路旁遇見一位披著灰袍的抄寫人。他沒有詢問你的姓名，只遞來一本薄薄的旅誌。書中共有三頁，紙面潔白，沒有任何預先寫好的行程。『不必將它填滿。』抄寫人說。『有些旅程留下文字，有些旅程留下空白。兩者並無高下。』",question:"三日之後，你希望這本旅誌呈現什麼模樣？",options:[
+  {title:"每頁只有一兩行穩妥的記錄",desc:"每日只前往一兩處容易抵達的場所，剩餘的時間則留給臨時的念頭與休息",score:"lantern",points:3},
+  {title:"多數頁面依然空白",desc:"也許只記下一場雨、一段海潮，或午後穿過山霧的風。你不需用筆墨證明這場旅程足夠豐富",score:"mist",points:3},
+  {title:"紙頁上留下密集卻緩慢的細節",desc:"一扇舊門、一座石廟、一碗熱食，或一道無意間走入的窄巷，都值得被寫下一筆",score:"crimson",points:3}]},
+ {chapter:"第二日・永雨",title:"與永雨共處",copy:"第二日清晨，天空比昨日更加低沉。雨沒有化作風暴，只是無窮無盡地落下。細密的水線覆蓋山徑、城牆與遠方屋瓦，彷彿整個世界都沉入一層灰白色的夢。地圖上的銀線暫時停止延伸。",question:"你願意讓這場雨，把自己帶入哪一種生活？",options:[
+  {title:"退入山海之間的沉默",desc:"不尋找新的去處，也不急著讓今日產生意義。只需看山影在霧裡時隱時現，聽雨與潮汐輪流覆蓋世界",score:"mist",points:3},
+  {title:"沿著古城的簷廊緩慢行走",desc:"將腳步縮小在一片古老街區之內，從長廊走入食肆，再轉入廟宇與舊宅，讓城市在雨中顯露不同年代",score:"crimson",points:3},
+  {title:"循著王城的燈火前行",desc:"原本的道路被雨水阻斷也無妨。城中仍有書塔、溫室、商館、劇院與設有長廊的庭院",score:"lantern",points:3}]},
+ {chapter:"第二日・午後",title:"雨中的甜點小屋",record:"sweet",copy:"雨勢漸緩時，你經過一間藏在老樹下的小屋。甜香從半掩的木門後飄出，櫥窗裡只剩三份點心。店主人望向你被雨水浸濕的斗篷，說：「遠行的人，總該為一種甜味停下腳步。」",question:"你會為哪一份甜點停留？",options:[
+  {title:"東島細菓禮匣",desc:"木匣裡整齊收著數枚小巧甜菓，是你即使身在異地，也能立刻認出的熟悉味道。它們適合收進行囊，在往後的路途中分次慢慢品嚐",result:"東島細菓禮匣"},
+  {title:"高聳的奶霜層糕",desc:"層糕高大而豐盛，一個人很難獨自吃完。你會邀請同行的友人圍坐分食，在談笑之間分享這三日的見聞與彼此走過的道路",result:"高聳的奶霜層糕"},
+  {title:"濃甜酸莓小派",desc:"小派精巧得恰好能捧在掌心，酥脆外殼裡盛著濃厚的酸莓與蜜餡。酸甜、濃郁而直接，正足以撫慰此刻的疲憊",result:"濃甜酸莓小派"}]},
+ {chapter:"第三日・未明",title:"返程以前",copy:"第三日清晨，雨聲變得比前兩日更輕。天際仍覆著厚雲，沒有人能斷言今日是否會放晴。你將旅誌、地圖與尚未乾透的斗篷收入行囊。回程的道路即將出現。地圖問道：『長明城仍會有鐘聲，原本的責任也不會因這三日而消失。但你可以帶回一件不會增加行囊重量的事物。』",question:"你希望那會是什麼？",options:[
+  {title:"世界仍值得靠近的證明",desc:"你想記得古老牆面上的痕跡、陌生街巷的氣味，以及一種從未嚐過的滋味",score:"crimson",points:4},
+  {title:"讓生活不必處處艱難的餘裕",desc:"你想記得，不是每一次離開都必須翻越高山。選擇較容易抵達的道路，也是一種對自己的照顧",score:"lantern",points:4},
+  {title:"不被眾聲淹沒的內在寂靜",desc:"你想記得，在遠離鐘聲與人群之處，自己曾經如此清楚地存在",score:"mist",points:4}]},
+ {chapter:"第三日・啟程以前",title:"有重量的紀念",record:"gift",copy:"回程以前，你來到最後一座驛站。守燈人沒有詢問地圖將你帶往何處，只指向桌上三件為遠行者準備的贈禮。『旅途已經給了你一件沒有重量的事物。』他說，『現在，你還可以帶走一件真正放得進行囊的東西。』",question:"你會將哪一件紀念帶回長明城？",options:[
+  {title:"星砂金墨禮匣",desc:"深色墨液裡懸著細碎金砂，每一筆都會在燈下微微閃爍。它適合寫下少數重要的句子或寄給珍視之人的信；多年以後再次提筆，你或許仍會想起贈予它的人",result:"星砂金墨禮匣"},
+  {title:"沉夜長書墨",desc:"這瓶墨沒有金砂，也沒有華麗匣裝，只有濃厚、飽滿而穩定的色澤。它能陪你寫完長信、日記與尚未完成的故事，在往後平凡的日子裡一頁頁留下痕跡",result:"沉夜長書墨"},
+  {title:"暮銀掌石",desc:"一枚被歲月磨得溫潤的深色奇石，大小恰好能藏進掌心。它會慢慢記住持有者的習慣，使往後那些細碎而繁複的事，都變得更輕省、更從容",result:"暮銀掌石"}]}
+];
+const panel=document.getElementById("panel"),topbar=document.getElementById("topbar"),chapterCount=document.getElementById("chapterCount"),roadFill=document.getElementById("roadFill");
+let index=0,scores={mist:0,lantern:0,crimson:0},answers=[],specialAnswers={sweet:"",gift:""};
+function shuffle(a){const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}return c}
+function animateReplace(fn){panel.classList.add("fade-out");setTimeout(()=>{panel.classList.remove("fade-out");fn();window.scrollTo({top:0,behavior:"smooth"})},240)}
+function renderIntro(){topbar.style.display="none";panel.innerHTML=`<div class="sigil">☂</div><div class="eyebrow">Into the Everrain</div><h1>永雨長征</h1><div class="story"><p>雨已經下了十三日。</p><p>長明城的鐘塔仍如往常一般，在黎明、正午與深夜敲響。鐘聲穿過屋瓦與長街，催促人們推開門扉、點亮燭臺、完成尚未結束的差事。</p><p>你記得每一道命令，沒有遺漏任何承諾；你將別人的憂慮妥善收起，也把自己的疲憊藏在不會被發現的地方。</p><p>直到某一個沒有鐘聲的清晨，你在沉默裡聽見一道極輕的聲音。它似乎來自城牆之外，又彷彿來自某個被你遺忘許久的地方。</p><p>於是，你解下腰間最沉重的幾枚徽記，只帶了三日所需的行囊，走向長明城的北門。</p><div class="incantation">不必詢問道路將通往何處。<br>只需誠實選擇，你願意如何前行。<br>三日之後，地圖自會顯現答案。</div></div><button class="primary" id="startBtn">越過城門</button>`;document.getElementById("startBtn").addEventListener("click",()=>{index=0;scores={mist:0,lantern:0,crimson:0};answers=[];specialAnswers={sweet:"",gift:""};renderOpeningTransition()})}
+function renderOpeningTransition(){
+  topbar.style.display="none";
+  animateReplace(()=>{
+    panel.innerHTML=`<div class="transition-scene"><div class="transition-icon">◇</div><div class="transition-copy"><p>北門在你身後緩慢闔上。</p><p>鐘聲穿過雨幕，逐漸退向遠方。</p><p>當你再次低頭時，那張沒有終點的地圖，已在掌中亮起第一道銀線。</p></div></div>`;
+    setTimeout(()=>animateReplace(renderQuestion),6800);
+  });
+}
+
+function renderQuestion(){
+  topbar.style.display="flex";
+  chapterCount.textContent=`足跡 ${index+1}／${questions.length}`;
+  roadFill.style.width=`${((index+1)/questions.length)*100}%`;
+
+  const q=questions[index],opts=shuffle(q.options);
+
+  panel.innerHTML=`<div class="eyebrow">${q.chapter}</div><div class="question-kicker">${q.title}</div><h2>${q.question}</h2><p class="question-copy">${q.copy}</p><div class="choices">${opts.map((o,i)=>`<button class="choice" data-score="${o.score||""}" data-points="${o.points||0}" data-record="${q.record||""}" data-result="${o.result||o.title}"><span class="choice-mark">${String.fromCharCode(65+i)}</span><span><span class="choice-title">${o.title}</span><span class="choice-desc">${o.desc}</span></span></button>`).join("")}</div>`;
+
+  panel.querySelectorAll(".choice").forEach(btn=>btn.addEventListener("click",()=>{
+    const target=btn.dataset.score;
+    const points=Number(btn.dataset.points||0);
+    const record=btn.dataset.record;
+    const result=btn.dataset.result;
+
+    panel.querySelectorAll(".choice").forEach(b=>b.disabled=true);
+    btn.classList.add("selected");
+
+    if(target&&Object.prototype.hasOwnProperty.call(scores,target)){
+      scores[target]+=points;
+      answers.push(target);
+    }else if(record){
+      specialAnswers[record]=result;
+    }
+
+    setTimeout(()=>{
+      if(index<questions.length-1)renderTransition(index);
+      else renderMapReveal();
+    },250);
+  },{once:true}));
+}
+function renderTransition(i){const s=transitions[i];animateReplace(()=>{panel.innerHTML=`<div class="transition-scene"><div class="transition-icon">${s.icon}</div><div class="transition-copy">${s.html}</div></div>`;setTimeout(()=>{index+=1;animateReplace(renderQuestion)},7500)})}
+function getRanking(){return Object.entries(scores).sort((a,b)=>b[1]-a[1])}
+function determineWinner(){const ranking=getRanking(),highest=ranking[0][1],tied=ranking.filter(([,v])=>v===highest).map(([k])=>k);let winner=ranking[0][0];if(tied.length>1){const last=answers[answers.length-1];if(tied.includes(last))winner=last;else if(tied.includes(answers[0]))winner=answers[0]}return{winner,ranking,tied:tied.length>1||ranking[0][1]-ranking[1][1]<=1}}
+function renderMapReveal(){topbar.style.display="none";animateReplace(()=>{panel.innerHTML=`<div class="transition-scene"><div class="transition-icon">✦</div><div class="transition-copy"><p>三日將盡。</p><p>你走過的道路沒有消失。</p><p>它們已化作河流、城牆、山脈與潮汐，留在這張地圖之上。</p><p>地圖從未替你選擇終點。</p><p>它只是記住了，當無人催促時，你曾如何選擇自己。</p></div><div class="loading-lines"><div class="loading-text" id="loadingText">雨正在洗去道路上多餘的痕跡……</div></div></div>`;const lines=["雨正在洗去道路上多餘的痕跡……","地圖正在辨認你留下的足印……","遠方的領地正在顯露輪廓……","你的終點即將浮現……"];let i=0;const el=document.getElementById("loadingText"),timer=setInterval(()=>{i+=1;if(i<lines.length)el.textContent=lines[i];else{clearInterval(timer);setTimeout(()=>animateReplace(renderResult),500)}},1050)})}
+
+let preparedResultFile=null,preparedResultUrl="",resultImagePreparing=false;
+
+function clearPreparedResultImage(){
+  if(preparedResultUrl){
+    URL.revokeObjectURL(preparedResultUrl);
+  }
+  preparedResultFile=null;
+  preparedResultUrl="";
+  resultImagePreparing=false;
+}
+
+function safeImageFilename(value){
+  return String(value).replace(/[\\/:*?"<>|]/g,"-").replace(/\s+/g,"-");
+}
+
+function canvasToPngBlob(canvas){
+  return new Promise((resolve,reject)=>{
+    canvas.toBlob(blob=>{
+      if(blob)resolve(blob);
+      else reject(new Error("無法建立 PNG 圖片"));
+    },"image/png",1);
+  });
+}
+
+async function prepareResultImage(p){
+  const button=document.getElementById("saveImageBtn");
+  const hint=document.getElementById("saveHint");
+  if(!button||resultImagePreparing)return;
+
+  resultImagePreparing=true;
+  clearPreparedResultImage();
+  resultImagePreparing=true;
+  button.disabled=true;
+  button.textContent="正在抄錄卷冊…";
+  if(hint)hint.textContent="正在將完整結果頁轉為圖片，請稍候。";
+
+  try{
+    if(typeof html2canvas!=="function"){
+      throw new Error("圖片工具尚未載入");
+    }
+
+    if(document.fonts&&document.fonts.ready){
+      await document.fonts.ready;
+    }
+
+    await new Promise(resolve=>{
+      requestAnimationFrame(()=>requestAnimationFrame(resolve));
+    });
+
+    panel.classList.add("capture-mode");
+
+    const preferredScale=Math.min(2,Math.max(1.35,window.devicePixelRatio||1));
+    const maxCanvasHeight=14000;
+    const heightSafeScale=maxCanvasHeight/Math.max(panel.scrollHeight,1);
+    const captureScale=Math.max(1,Math.min(preferredScale,heightSafeScale));
+    const canvas=await html2canvas(panel,{
+      backgroundColor:"#0b1018",
+      scale:captureScale,
+      useCORS:true,
+      allowTaint:false,
+      logging:false,
+      imageTimeout:15000,
+      removeContainer:true,
+      foreignObjectRendering:false,
+      onclone:clonedDocument=>{
+        const clonedPanel=clonedDocument.getElementById("panel");
+        if(clonedPanel){
+          clonedPanel.classList.remove("fade-out");
+          clonedPanel.classList.add("capture-mode");
+          clonedPanel.style.animation="none";
+          clonedPanel.style.transform="none";
+          clonedPanel.style.opacity="1";
+          clonedPanel.style.overflow="visible";
+        }
+        clonedDocument.querySelectorAll('[data-html2canvas-ignore="true"]').forEach(element=>element.remove());
+      }
+    });
+
+    panel.classList.remove("capture-mode");
+
+    const blob=await canvasToPngBlob(canvas);
+    preparedResultFile=new File(
+      [blob],
+      `Into-the-Everrain-${safeImageFilename(p.title)}.png`,
+      {type:"image/png"}
+    );
+    preparedResultUrl=URL.createObjectURL(blob);
+
+    button.disabled=false;
+    button.textContent="已抄錄至卷冊";
+    if(hint){
+      hint.textContent="";
+      hint.style.display="none";
+    }
+  }catch(error){
+    panel.classList.remove("capture-mode");
+    console.error(error);
+    button.disabled=false;
+    button.textContent="重新抄錄卷冊";
+    if(hint)hint.textContent="圖片製作失敗。請確認網路連線後再點一次。";
+  }finally{
+    resultImagePreparing=false;
+  }
+}
+
+function downloadPreparedResultImage(button,hint){
+  if(!preparedResultFile||!preparedResultUrl)return;
+
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||
+    (navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+
+  if(isIOS){
+    const opened=window.open(preparedResultUrl,"_blank");
+    if(opened){
+      if(hint)hint.textContent="圖片已開啟。請長按圖片，再選擇「儲存到照片」。";
+      return;
+    }
+  }
+
+  const link=document.createElement("a");
+  link.href=preparedResultUrl;
+  link.download=preparedResultFile.name;
+  link.rel="noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  if(hint){
+    hint.textContent=isIOS
+      ?"圖片已開啟或下載。請長按圖片，選擇「儲存到照片」。"
+      :"圖片已下載；可在下載項目中開啟，並移至相簿。";
+  }
+  button.textContent="已抄錄至卷冊";
+}
+
+async function savePreparedResultImage(p,button){
+  const hint=document.getElementById("saveHint");
+
+  if(!preparedResultFile){
+    await prepareResultImage(p);
+    if(!preparedResultFile)return;
+  }
+
+  const fileShareData={
+    title:"永雨長征｜Into the Everrain",
+    files:[preparedResultFile]
+  };
+
+  try{
+    if(
+      navigator.share&&
+      navigator.canShare&&
+      navigator.canShare({files:[preparedResultFile]})
+    ){
+      await navigator.share(fileShareData);
+      button.textContent="已抄錄至卷冊";
+      if(hint){
+        hint.textContent="系統選單已開啟。請選擇「儲存影像」、相簿或照片應用程式。";
+      }
+      return;
+    }
+
+    downloadPreparedResultImage(button,hint);
+  }catch(error){
+    if(error&&error.name==="AbortError"){
+      button.textContent="已抄錄至卷冊";
+      if(hint)hint.textContent="你已關閉儲存選單；可再次點選按鈕。";
+      return;
+    }
+
+    console.error(error);
+    downloadPreparedResultImage(button,hint);
+  }
+}
+
+function renderResult(){
+  const out=determineWinner(),p=places[out.winner];
+  const tie=out.tied?`<div class="near-tie">地圖的銀線曾在兩條道路之間短暫分岔。你所需要的療癒並不只有一種模樣；此刻顯現的力量，只是你在最後幾步中稍微更靠近的方向。</div>`:"";
+  const sweet=specialAnswers.sweet||"尚未留下甜味";
+  const gift=specialAnswers.gift||"尚未選擇紀念";
+  const sweetText=sweetImprints[sweet]||"地圖尚未記下這份甜味。";
+  const giftText=giftImprints[gift]||"地圖尚未記下這件紀念。";
+
+  clearPreparedResultImage();
+
+  panel.innerHTML=`
+    <div class="result-hero">
+      <div class="result-emblem">${p.emblem}</div>
+      <div>
+        <div class="result-region">你的潛意識療癒方式是——</div>
+        <h2 class="result-title">${p.power}</h2>
+        <div class="result-name">旅人稱號・${p.name}</div>
+        <div class="result-destination">地圖終點・${p.title}</div>
+      </div>
+    </div>
+
+    <div class="story">
+      ${p.analysis.map(x=>`<p>${x}</p>`).join("")}
+    </div>
+
+    <div class="result-section">
+      <h3>這份力量提醒你</h3>
+      ${p.reminder.map(x=>`<p>${x}</p>`).join("")}
+    </div>
+
+    <div class="result-section">
+      <h3>旅程留下的三枚印記</h3>
+      <p class="imprint-intro">地圖除了顯示你的療癒方式，也記住了你在旅途中最自然靠近的事物。</p>
+      <div class="imprint-grid">
+        <div class="imprint-card">
+          <div class="imprint-label">道路之印</div>
+          <div class="imprint-value">${p.title}</div>
+          <p>${p.road}</p>
+        </div>
+        <div class="imprint-card">
+          <div class="imprint-label">行囊之印</div>
+          <div class="imprint-value">${gift}</div>
+          <p>${giftText}</p>
+        </div>
+        <div class="imprint-card">
+          <div class="imprint-label">味覺之印</div>
+          <div class="imprint-value">${sweet}</div>
+          <p>${sweetText}</p>
+        </div>
+      </div>
+    </div>
+
+    ${tie}
+
+    <div class="result-section">
+      <h3>你的療癒關鍵字</h3>
+      <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+    </div>
+
+    <div class="actions" data-html2canvas-ignore="true">
+      <button class="primary" id="restartBtn">重新展開地圖</button>
+      <button class="secondary" id="saveImageBtn" disabled>正在抄錄卷冊…</button>
+    </div>
+    <p class="save-hint" id="saveHint" data-html2canvas-ignore="true">正在將完整結果頁轉為圖片，請稍候。</p>
+  `;
+
+  document.getElementById("restartBtn").addEventListener("click",()=>{
+    clearPreparedResultImage();
+    animateReplace(renderIntro);
+  });
+
+  const saveImageButton=document.getElementById("saveImageBtn");
+  saveImageButton.addEventListener("click",()=>savePreparedResultImage(p,saveImageButton));
+
+  requestAnimationFrame(()=>prepareResultImage(p));
+}
+renderIntro();
+</script>
+</body>
+</html>
